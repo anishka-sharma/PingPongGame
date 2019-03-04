@@ -1,39 +1,38 @@
-namespace PingPongGame{
+namespace EAPingPong{
     export class Ball implements iRigidBody{
-        public x: number;
-        public y:number;
-        public width:number;
-        public height:number;
-        public  graphics:any;
-        stage : any;
-
-        constructor(x:number, y:number, radius:number, stage:any){
+                
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        stage: any;
+        
+        public internalGraphics : any;
+        
+        constructor( x:number, y:number, width:number, height:number, stage:any){
             this.x = x;
             this.y = y;
-            this.width = 2*radius;
-            this.height = 2*radius;
+            this.width = width;
+            this. height = height;
             this.stage = stage;
-            this.graphics = new PIXI.Graphics;
-            this.drawBall();
+            this.internalGraphics = new PIXI.Graphics;
+            this.draw();
+        }
+        
+        draw(){
+            this.internalGraphics.beginFill(0xD7B5E7);
+            this.internalGraphics.drawCircle(this.x,this.y,this.height/2,this.stage);
+            this.internalGraphics.endFill();
+            this.stage.addChild(this.internalGraphics);
+            return this;
         }
 
-        drawBall(){
-            
-        this.graphics.beginFill(0xFFFF00);
-        this.graphics.lineStyle(5, 0xFF0000);
-        this.graphics.drawCircle(this.x,this.y,this.height/2,this.stage);
-        this.graphics.endFill();
-        this.stage.stage.addChild(this.graphics);
-        return this;
+        moveTo(x:number, y:number){
+            this.x = x;
+            this.y = y;
+            this.internalGraphics.x += this.x;
+            this.internalGraphics.y += this.y;   
         }
-
-        moveTo(x:number,y:number):void{
-            this.x=x;
-            this.y=y;
-            this.graphics.position.x += x;
-            this.graphics.position.y += y;
-            
-            }
+        
     }
-
- }
+}

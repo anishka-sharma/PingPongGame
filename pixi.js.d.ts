@@ -2228,7 +2228,7 @@ declare namespace PIXI {
             getLocalPosition(displayObject: DisplayObject, point?: Point, globalPos?: Point): Point;
         }
 
-        type InteractionPointerEvents =
+        type interactionPointerEvents =
             | 'pointerdown'
             | 'pointercancel'
             | 'pointerup'
@@ -2237,8 +2237,8 @@ declare namespace PIXI {
             | 'pointermove'
             | 'pointerover'
             | 'pointerout';
-        type InteractionTouchEvents = 'touchstart' | 'touchcancel' | 'touchend' | 'touchendoutside' | 'touchmove' | 'tap';
-        type InteractionMouseEvents =
+        type interactionTouchEvents = 'touchstart' | 'touchcancel' | 'touchend' | 'touchendoutside' | 'touchmove' | 'tap';
+        type interactionMouseEvents =
             | 'rightdown'
             | 'mousedown'
             | 'rightup'
@@ -2251,8 +2251,8 @@ declare namespace PIXI {
             | 'mouseover'
             | 'mouseout'
             | 'mouseover';
-        type InteractionPixiEvents = 'added' | 'removed';
-        type InteractionEventTypes = InteractionPointerEvents | InteractionTouchEvents | InteractionMouseEvents | InteractionPixiEvents;
+        type interactionPixiEvents = 'added' | 'removed';
+        type interactionEventTypes = InteractionPointerEvents | InteractionTouchEvents | InteractionMouseEvents | InteractionPixiEvents;
 
         export interface InteractionManagerOptions {
             autoPreventDefault?: boolean;
