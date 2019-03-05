@@ -1,10 +1,12 @@
-declare namespace PingPongGame{
+namespace EAPingPong{
     export interface iRigidBody{
-        x: number;
+        stage:any;
+        x:number;
         y:number;
         width:number;
         height:number;
-        stage : any;
-        moveTo(x:number, y:number) : void;
+        
+        draw():void;
+        moveTo(x:number, y:number):void;
     }
 }
