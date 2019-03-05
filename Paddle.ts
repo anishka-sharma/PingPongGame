@@ -34,8 +34,8 @@ namespace EAPingPong{
         
         moveTo( x:number, y:number ):void{
             this.x = x;
-            this.y = y;
-            this.internalGraphics.position.y += this.y;
+            this.y += y;
+            this.internalGraphics.position.y += y;
         }
     }
 }

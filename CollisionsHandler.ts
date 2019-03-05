@@ -1,21 +1,17 @@
-/// <reference path="Ball.ts" />
-/// <reference path="Paddle.ts" />
-/// <reference path="Boundaries.ts" />
+/// <reference path="iRigidBody.ts" />
+/// <reference path="PingPongGameController.ts" />
+
+
 
 namespace EAPingPong{
     export class CollisionsHandler{
-        checkPaddleCollisions(paddle1:Paddle,paddle2:Paddle,ball:Ball):boolean{
-            if((paddle1.x === (ball.x - 10)) || (paddle2.x === (ball.x-10))){
+        checkCollision(body1:iRigidBody,body2:iRigidBody){
+            if(body1.x < body2.x + body2.width/2 &&
+                body1.x + body1.width > body2.x - body2.width/2 &&
+                   body1.y < body2.y + body2.height/2 &&
+                   body1.height + body1.y > body2.y - body2.width/2){
                 return true;
             }
-            return false;
-        }
-
-        checkBoundaryTopBottomCollisions(boundryTop:Boundaries, boundaryBottom:Boundaries, ball:Ball):boolean{
-            if((boundryTop.y === (ball.y-10)) || (boundaryBottom.y === (ball.y + 10))){
-                return true;
-            }
-            return false;
         }
     }
 }

@@ -32,10 +32,10 @@ var EAPingPong;
             return this;
         };
         Ball.prototype.moveTo = function (x, y) {
-            this.x = x;
-            this.y = y;
-            this.internalGraphics.x += this.x;
-            this.internalGraphics.y += this.y;
+            this.x += x;
+            this.y += y;
+            this.internalGraphics.x += x;
+            this.internalGraphics.y += y;
         };
         return Ball;
     }());
@@ -55,7 +55,6 @@ var EAPingPong;
         }
         Boundaries.prototype.draw = function () {
             this.internalGraphics.beginFill(0x76BDB7);
-            this.internalGraphics.lineStyle(5, 0x76BDB7);
             this.internalGraphics.drawRect(this.x, this.y, this.width, this.height, this.stage);
             this.internalGraphics.endFill();
             this.stage.addChild(this.internalGraphics);
@@ -90,36 +89,12 @@ var EAPingPong;
         };
         Paddle.prototype.moveTo = function (x, y) {
             this.x = x;
-            this.y = y;
-            this.internalGraphics.position.y += this.y;
+            this.y += y;
+            this.internalGraphics.position.y += y;
         };
         return Paddle;
     }());
     EAPingPong.Paddle = Paddle;
-})(EAPingPong || (EAPingPong = {}));
-/// <reference path="Ball.ts" />
-/// <reference path="Paddle.ts" />
-/// <reference path="Boundaries.ts" />
-var EAPingPong;
-(function (EAPingPong) {
-    var CollisionsHandler = /** @class */ (function () {
-        function CollisionsHandler() {
-        }
-        CollisionsHandler.prototype.checkPaddleCollisions = function (paddle1, paddle2, ball) {
-            if ((paddle1.x === (ball.x - 10)) || (paddle2.x === (ball.x - 10))) {
-                return true;
-            }
-            return false;
-        };
-        CollisionsHandler.prototype.checkBoundaryTopBottomCollisions = function (boundryTop, boundaryBottom, ball) {
-            if ((boundryTop.y === (ball.y - 10)) || (boundaryBottom.y === (ball.y + 10))) {
-                return true;
-            }
-            return false;
-        };
-        return CollisionsHandler;
-    }());
-    EAPingPong.CollisionsHandler = CollisionsHandler;
 })(EAPingPong || (EAPingPong = {}));
 var EAPingPong;
 (function (EAPingPong) {
@@ -140,7 +115,7 @@ var EAPingPong;
 /// <reference path="Ball.ts" />
 /// <reference path="Paddle.ts" />
 /// <reference path="GameController.ts" />
-/// <reference path="CollisionsHandler.ts" />
+/// <reference path="CollisionsHandler.ts"/>
 var EAPingPong;
 (function (EAPingPong) {
     var PingPongGameController = /** @class */ (function (_super) {
@@ -156,8 +131,9 @@ var EAPingPong;
             this.boundRight = new EAPingPong.Boundaries(790, 0, 10, 800, this.app.stage);
             this.boundBottom = new EAPingPong.Boundaries(0, 790, 800, 10, this.app.stage);
             this.boundLeft = new EAPingPong.Boundaries(0, 0, 10, 800, this.app.stage);
-            this.ballVelocityX = 1;
-            this.ballVelocityY = 1;
+            this.ballVelocityX = 2;
+            this.ballVelocityY = 2;
+            this.collider = new EAPingPong.CollisionsHandler();
         };
         PingPongGameController.prototype.update = function (delta) {
             var _this = this;
@@ -168,11 +144,15 @@ var EAPingPong;
             }
             //move paddle 
             movePaddle();
+            _this.paddleCollider(_this.paddle1, _this.ball);
+            _this.paddleCollider(_this.paddle2, _this.ball);
+            _this.boundCollider(_this.boundTop, _this.ball);
+            _this.boundCollider(_this.boundBottom, _this.ball);
             function movePaddle() {
                 movePaddle1();
                 movePaddle2();
                 function movePaddle1() {
-                    _this.paddle1.internalGraphics.position.y += _this.ball.y;
+                    _this.paddle1.moveTo(_this.paddle1.x, _this.ballVelocityY);
                 }
                 function movePaddle2() {
                     var x1 = _this.app.renderer.plugins.interaction.mouse.global.x;
@@ -188,24 +168,39 @@ var EAPingPong;
                 }
             }
             //collider
-            ballBoundaryCollide();
-            ballPaddlesCollide();
-            function ballBoundaryCollide() {
-                var obj = new EAPingPong.CollisionsHandler();
-                if (obj.checkBoundaryTopBottomCollisions(_this.boundTop, _this.boundBottom, _this.ball) === true) {
-                    _this.ballVelocityY *= -1;
-                }
+        };
+        PingPongGameController.prototype.paddleCollider = function (paddle, ball) {
+            if (this.collider.checkCollision(paddle, ball)) {
+                this.ballVelocityX *= -1;
             }
-            function ballPaddlesCollide() {
-                var obj = new EAPingPong.CollisionsHandler();
-                if (obj.checkPaddleCollisions(_this.paddle1, _this.paddle2, _this.ball) === true) {
-                    _this.ballVelocityX *= -1;
-                }
+        };
+        PingPongGameController.prototype.boundCollider = function (boundary, ball) {
+            if (this.collider.checkCollision(boundary, ball)) {
+                this.ballVelocityY *= -1;
             }
         };
         return PingPongGameController;
     }(EAPingPong.GameController));
     EAPingPong.PingPongGameController = PingPongGameController;
+})(EAPingPong || (EAPingPong = {}));
+/// <reference path="iRigidBody.ts" />
+/// <reference path="PingPongGameController.ts" />
+var EAPingPong;
+(function (EAPingPong) {
+    var CollisionsHandler = /** @class */ (function () {
+        function CollisionsHandler() {
+        }
+        CollisionsHandler.prototype.checkCollision = function (body1, body2) {
+            if (body1.x < body2.x + body2.width / 2 &&
+                body1.x + body1.width > body2.x - body2.width / 2 &&
+                body1.y < body2.y + body2.height / 2 &&
+                body1.height + body1.y > body2.y - body2.width / 2) {
+                return true;
+            }
+        };
+        return CollisionsHandler;
+    }());
+    EAPingPong.CollisionsHandler = CollisionsHandler;
 })(EAPingPong || (EAPingPong = {}));
 /// <reference path="PingPongGameController.ts" />
 var EAPingPong;

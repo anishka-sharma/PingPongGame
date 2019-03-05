@@ -28,10 +28,10 @@ namespace EAPingPong{
         }
 
         moveTo(x:number, y:number){
-            this.x = x;
-            this.y = y;
-            this.internalGraphics.x += this.x;
-            this.internalGraphics.y += this.y;   
+            this.x += x;
+            this.y += y;
+            this.internalGraphics.x += x;
+            this.internalGraphics.y += y;   
         }
         
     }
